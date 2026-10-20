@@ -30,7 +30,7 @@ Exception: dsh always reads the global instruction files `~/.dsh/AGENTS.md` and 
 
 Requires dsh **0.2.1-rc.2 or later, below 0.3.0** (`engines.dsh` in `package.json`). The plugin is plain JavaScript: installation runs no build and needs no `allowBuilds` entry.
 
-**Desktop**: open "Install a third-party plugin" on the Plugins page and enter `github:Miint-Sunny/dsh-nai5-prompting#<commit>`. Pinning a commit keeps later pushes from changing what you installed. Alternatively, fully quit Desktop (⌘Q) and run its bundled CLI:
+**Desktop**: select **Plugins** in the sidebar (not Settings), then **+ Add plugin** at the top right; the arrow beside it offers the same entry as **Install a third-party plugin**. Enter `github:Miint-Sunny/dsh-nai5-prompting#<commit>` or the path of a local checkout, then select **Install**. Pinning a commit keeps later pushes from changing what you installed. Alternatively, fully quit Desktop (⌘Q) and run its bundled CLI:
 
 ```bash
 "/Applications/DeepSeek Harness.app/Contents/Resources/runtime/cli/bin/dsh" plugin --profile desktop add github:Miint-Sunny/dsh-nai5-prompting#<commit>
