@@ -1,0 +1,18 @@
+{
+  "version": "v1.2",
+  "role": "writing",
+  "skill": "nai5-costume-writing",
+  "requires": [
+    "nai5-writing"
+  ],
+  "modules": {
+    "writing-costume": {
+      "path": "方法/写法/costume.md",
+      "sha256": "452162e742aae63cced073c042828ef32f02053a46e05745c2f5ae11654e206e"
+    }
+  },
+  "entry": {
+    "path": "工具/职责拆分/入口/nai5-costume-writing.md",
+    "sha256": "cd5f9389b2812a82b4cdb1c0659f8294345c5e03377e5ba88fa9728ca337f702"
+  }
+}

@@ -1,0 +1,21 @@
+dsh-nai5-prompting
+Copyright (C) 2026 Miint-Sunny
+
+This program is free software: you can redistribute it and/or modify it under
+the terms of the GNU General Public License as published by the Free Software
+Foundation, version 3 of the License only (GPL-3.0-only).
+
+This program is distributed in the hope that it will be useful, but WITHOUT ANY
+WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+PARTICULAR PURPOSE. See the GNU General Public License for more details. The
+full license text is in the LICENSE file.
+
+Bundled material
+- skills/: the split skills of nai5-prompting
+  (https://github.com/Miint-Sunny/nai5-prompting), Copyright (C) 2026
+  Miint-Sunny, GPL-3.0-only, copied without modification at the release
+  recorded in vendor.json. Each skill directory keeps its original LICENSE
+  and NOTICE files.
+
+This plugin runs inside DeepSeek Harness (https://github.com/deepseek-ai/deepseek-harness)
+and uses its published plugin interfaces; DeepSeek Harness is not bundled.

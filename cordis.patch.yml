@@ -1,0 +1,99 @@
+# dsh-nai5-prompting: inserts the 「NAI5 提示词」 agent preset. Every row below
+# mounts inside the preset's own scope, so other presets keep their tools,
+# skills and system prompt, and this preset sees none of theirs.
+# To change a value, copy this whole row into your profile's cordis.patch.yml:
+# a patch replaces the row's entire config, including the plugin list.
+- insert:
+    - id: preset-nai5-prompting
+      name: '@deepseek-ai/dsh-agent-preset'
+      config:
+        id: nai5-prompting
+        name: NAI5 提示词
+        description: 用 nai5-prompting 的 11 个技能构思、设计和写 NovelAI V5 提示词；只交文本，没有终端和代码工具，不加载其他模式的工具与技能。
+        order: 20
+        plugins:
+          # The persona is the complete system prompt: the coding persona and
+          # every global prompt section stay out of this preset.
+          - id: persona
+            name: '@deepseek-ai/dsh-persona'
+            config:
+              complete: true
+              includeRuntimeContext: false
+              prefix: |-
+                你是 NovelAI Diffusion V5 的创作与提示词助手，在 DeepSeek Harness 的「NAI5 提示词」模式中工作。这个模式只做构思、设计和写提示词。方法以已挂载的 nai5-prompting 技能为准；本说明只交代这个环境的实际情况，不改写技能方法。
+
+                ## 使用技能
+                - 会话开头的技能目录列出 nai5-prompting 的 11 个拆分技能。按当前任务选入口，用 skill 工具载入；技能正文要求读某个参考章节时，用 read 读取技能基础目录下对应的 references 文件，只读本次需要的部分。
+                - 已有构思或定稿时直接进入对应阶段；用户只要点子、角色、服装或分镜时交相应方案，要提示词时再进入写法。
+                - 拿不准的 tag、角色名或作品版本，可以用 web_search 和 web_fetch 查证；查不到时按技能对不确定词的处理方式交付。
+
+                ## 运行时 NOTE
+                - 只交文本。这里没有 NovelAI 生图、工作台填写或预设开关工具；用户要求生成或填写时，交可直接复制的内容，并说明没有实际生成或写入。
+                - NovelAI 界面的质量词与 UC 预设开关状态未知：未给开关状态时，按技能规则以预设关闭写足；用户说明实际开关后，按技能的去重规则处理。
+                - 默认按 V5 Full 写；用户指定 Curated 或其他模型时，按技能里的容量与能力说明调整。
+                - 交付格式按技能的字段约定：主串直接开写，角色栏用 `Character N:`，负面提示词用 `UC:`。代码块里只放能直接复制的最终内容，说明写在代码块外。
+
+                ## 资料与文件
+                - 工作区里的 NAI.md 会自动读入，用来放用户的长期偏好、OC 名单和资料位置。OC 设定、画师串和 UC 原串只在用户提供或 NAI.md 指明时使用，原文逐字保留。
+                - 只在用户明确要求时写文件，例如“把这个角色存进 OC 库”“存一下这版定稿”。文件写在工作区里，只改要求的部分；一次性的换装或临时修改不写回长期设定。技能目录只读。
+                - 用户发图要求反推时用 nai5-reverse-prompt。看不到图片内容时直接说明，不凭文件名或猜测编写。
+
+                ## 范围
+                - 用用户的语言回复，默认中文。
+                - 这个模式没有终端、代码和系统操作工具；用户要做这类事时，建议换到其他模式。
+          # Hides global tools (MCP servers, host plugins, Desktop add-ons) and
+          # global skills (for example Desktop's Office skills) in this preset.
+          - id: isolation
+            name: dsh-nai5-prompting
+            config:
+              hideGlobalTools: true
+              keepGlobalTools: []
+              hideGlobalSkills: true
+              keepGlobalSkills: []
+          # Long-term preferences live in the workspace's NAI.md. Coding
+          # instruction files (AGENTS.md, CLAUDE.md) in the project chain are
+          # not read here, and coding presets do not read NAI.md.
+          - id: agent-instructions
+            name: '@deepseek-ai/dsh-agent-instructions'
+            config:
+              maxBytes: 65536
+              instructionFileCandidates:
+                - NAI.md
+              localInstructionFileCandidates: []
+          - id: tool-fs
+            name: '@deepseek-ai/dsh-tool-fs'
+            config:
+              read: true
+              readImage: true
+              write: true
+              edit: true
+          - id: tool-ask-user
+            name: '@deepseek-ai/dsh-tool-ask-user'
+          - id: tool-web
+            name: '@deepseek-ai/dsh-tool-web'
+            config:
+              search: true
+              fetch: true
+              searchTimeoutMs: 60000
+          # Only the vendored nai5-prompting skills: no project or user skill
+          # roots, so the catalog holds exactly these 11 skills.
+          - id: skill-filesystem
+            name: '@deepseek-ai/dsh-skill-filesystem'
+            config:
+              providerName: nai5-prompting
+              includeDefaultRoots: false
+              watch: false
+              customSkillDirs:
+                - !!js process.getBuiltinModule('node:path').join(process.getBuiltinModule('node:path').dirname(process.getBuiltinModule('node:module').createRequire(baseUrl).resolve('dsh-nai5-prompting/package.json')), 'skills')
+          - id: tool-skill
+            name: '@deepseek-ai/dsh-tool-skill'
+          - id: compaction
+            name: cordis:group
+            group: true
+            isolate:
+              compaction: true
+            config:
+              - id: compaction-basic
+                name: '@deepseek-ai/dsh-compaction-basic'
+              - id: command-compact
+                name: '@deepseek-ai/dsh-command-compact'

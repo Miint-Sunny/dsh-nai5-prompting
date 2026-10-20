@@ -1,0 +1,64 @@
+{
+  "name": "dsh-nai5-prompting",
+  "version": "0.1.0",
+  "description": "DeepSeek Harness 的「NAI5 提示词」预设：用 nai5-prompting 的 11 个拆分技能构思和写 NovelAI V5 提示词；只交文本，与其他预设的工具和技能互不干涉",
+  "keywords": [
+    "deepseek-harness",
+    "dsh",
+    "dsh-bundle",
+    "novelai",
+    "prompt"
+  ],
+  "license": "GPL-3.0-only",
+  "author": "Miint-Sunny",
+  "homepage": "https://github.com/Miint-Sunny/dsh-nai5-prompting#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Miint-Sunny/dsh-nai5-prompting.git"
+  },
+  "type": "module",
+  "main": "lib/index.js",
+  "exports": {
+    ".": {
+      "default": "./lib/index.js"
+    },
+    "./package.json": "./package.json",
+    "./locale/*.json": "./locale/*.json"
+  },
+  "files": [
+    "lib",
+    "locale",
+    "skills",
+    "examples",
+    "cordis.patch.yml",
+    "vendor.json",
+    "VENDOR.md",
+    "README.md",
+    "README.en.md",
+    "NOTICE"
+  ],
+  "scripts": {
+    "test": "node --test test/",
+    "sync-skills": "node scripts/sync-skills.mjs"
+  },
+  "engines": {
+    "dsh": ">=0.2.1-rc.2 <0.3.0-0"
+  },
+  "peerDependencies": {
+    "@deepseek-ai/schemastery": "^3.18.4"
+  },
+  "peerDependenciesMeta": {
+    "@deepseek-ai/schemastery": {
+      "optional": true
+    }
+  },
+  "devDependencies": {
+    "@deepseek-ai/schemastery": "3.18.4",
+    "yaml": "2.9.1"
+  },
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    }
+  }
+}
