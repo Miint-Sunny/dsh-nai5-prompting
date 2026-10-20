@@ -48,7 +48,7 @@ A tarball from `npm pack` works in place of the `github:` spec. To uninstall, re
 
 1. Make a dedicated directory for prompt work, such as `~/NAI`, and add it as a workspace. Avoid code repositories.
 2. Put an `NAI.md` there with long-term preferences, fixed artist strings, your UC, and where your OC sheets live; start from [examples/studio/NAI.md](examples/studio/NAI.md). Every session reads it, and it is read again after compaction.
-3. Start a session with the "NAI5 提示词" preset and describe what you want: ideas, character or outfit design, comic storyboards, or finished prompts.
+3. Start a session with the "NAI5 提示词" preset and describe what you want. The default deliverable is a ready-to-copy prompt: given only a subject (such as "a scene with lotus leaves") or a chosen direction, it first states the picture decisions it filled in, in a few lines, then gives the complete prompt, adding a few alternative directions when the subject is open. Say "just give me directions" or "design only" when you want ideas, character or outfit designs, or comic storyboards without a prompt.
 4. Ask explicitly when something should be saved ("save this character to the OC library"). Nothing is written otherwise.
 5. Prompt reverse-engineering from an image needs a model with image input, such as `deepseek-flash` in the built-in catalog; dsh refuses image messages for text-only models.
 
