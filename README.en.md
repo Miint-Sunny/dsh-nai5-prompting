@@ -9,7 +9,7 @@ Adds an "NAI5 提示词" (NAI5 prompting) agent preset to [DeepSeek Harness](htt
 Pick "NAI5 提示词" from the preset menu when you start a session (the button that shows "Standard mode" by default).
 
 - **System prompt**: replaced entirely by prompt-writing instructions; the coding instructions never appear. The instructions state what this environment can do: text only, no image generation or workbench writes, and NovelAI presets assumed off. The method itself comes from the skills.
-- **Skills**: only the 11 split skills of nai5-prompting v1.2, copied byte for byte (see [VENDOR.md](VENDOR.md)).
+- **Skills**: only the 11 split skills of nai5-prompting v1.2.5, copied byte for byte (see [VENDOR.md](VENDOR.md)).
 - **Tools**: loading skills, reading and writing workspace files, viewing images, asking you questions, and web search and fetch for checking tags and character names. There is no terminal, subagent, plan mode, todo list, or MCP.
 - **Long sessions**: automatic compaction near the context limit, plus a manual `/compact`.
 
