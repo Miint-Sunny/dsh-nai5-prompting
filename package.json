@@ -38,7 +38,7 @@
     "NOTICE"
   ],
   "scripts": {
-    "test": "node --test test/",
+    "test": "node --test test/*.test.mjs",
     "sync-skills": "node scripts/sync-skills.mjs"
   },
   "engines": {
