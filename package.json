@@ -1,6 +1,6 @@
 {
   "name": "dsh-nai5-prompting",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "DeepSeek Harness 的「NAI5 提示词」预设：用 nai5-prompting 的 11 个拆分技能构思和写 NovelAI V5 提示词；只交文本，与其他预设的工具和技能互不干涉",
   "keywords": [
     "deepseek-harness",
@@ -12,6 +12,9 @@
   "license": "GPL-3.0-only",
   "author": "Miint-Sunny",
   "homepage": "https://github.com/Miint-Sunny/dsh-nai5-prompting#readme",
+  "bugs": {
+    "url": "https://github.com/Miint-Sunny/dsh-nai5-prompting/issues"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Miint-Sunny/dsh-nai5-prompting.git"

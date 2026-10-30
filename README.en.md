@@ -10,7 +10,7 @@ Pick "NAI5 提示词" from the preset menu when you start a session (the button 
 
 - **System prompt**: replaced entirely by prompt-writing instructions; the coding instructions never appear. The instructions state what this environment can do: text only, no image generation or workbench writes, and NovelAI presets assumed off. The method itself comes from the skills.
 - **Skills**: only the 11 split skills of nai5-prompting v1.2.5, copied byte for byte (see [VENDOR.md](VENDOR.md)).
-- **Tools**: loading skills, reading and writing workspace files, viewing images, asking you questions, and web search and fetch for checking tags and character names. There is no terminal, subagent, plan mode, todo list, or MCP.
+- **Tools**: loading skills, reading and writing workspace files, viewing images, asking you questions, and web search and fetch for checking tags and character names. There is no terminal, subagent, plan mode, todo list, or MCP. From dsh 0.2.2, a step omits web search when the current model route has no credentials for the search service.
 - **Long sessions**: automatic compaction near the context limit, plus a manual `/compact`.
 
 ## Isolation
@@ -28,21 +28,23 @@ Exception: dsh always reads the global instruction files `~/.dsh/AGENTS.md` and 
 
 ## Install
 
-Requires dsh **0.2.1-rc.2 or later, below 0.3.0** (`engines.dsh` in `package.json`). The plugin is plain JavaScript: installation runs no build and needs no `allowBuilds` entry.
+Requires dsh **0.2.1-rc.2 or later, below 0.3.0** (`engines.dsh` in `package.json`); tested on 0.2.1-rc.3 and 0.2.2-alpha.2. The plugin is plain JavaScript: installation runs no build and needs no `allowBuilds` entry.
 
-**Desktop**: select **Plugins** in the sidebar (not Settings), then **+ Add plugin** at the top right; the arrow beside it offers the same entry as **Install a third-party plugin**. Enter `github:Miint-Sunny/dsh-nai5-prompting#<commit>` or the path of a local checkout, then select **Install**. Pinning a commit keeps later pushes from changing what you installed. Alternatively, fully quit Desktop (⌘Q) and run its bundled CLI:
+**Desktop**: select **Plugins** in the sidebar (not Settings), then **+ Add plugin** at the top right; the arrow beside it offers the same entry as **Install a third-party plugin**. Enter the npm package name `dsh-nai5-prompting`, then select **Install**. dsh installs through pnpm, which by default skips versions published less than 24 hours ago, so a new release becomes installable a day after it is published.
+
+The same field also takes `github:Miint-Sunny/dsh-nai5-prompting#<commit>` (pinning a commit keeps later pushes from changing what you installed) or the path of a local checkout. Alternatively, fully quit Desktop (⌘Q) and run its bundled CLI:
 
 ```bash
-"/Applications/DeepSeek Harness.app/Contents/Resources/runtime/cli/bin/dsh" plugin --profile desktop add github:Miint-Sunny/dsh-nai5-prompting#<commit>
+"/Applications/DeepSeek Harness.app/Contents/Resources/runtime/cli/bin/dsh" plugin --profile desktop add dsh-nai5-prompting@0.1.3 --save-exact
 ```
 
 **Other profiles** (for example `dsh web`):
 
 ```bash
-dsh plugin --profile web add github:Miint-Sunny/dsh-nai5-prompting#<commit>
+dsh plugin --profile web add dsh-nai5-prompting@0.1.3 --save-exact
 ```
 
-A tarball from `npm pack` works in place of the `github:` spec. To uninstall, remove the plugin on the Plugins page, or quit Desktop and run `dsh plugin --profile desktop remove dsh-nai5-prompting`. Sessions created with this preset cannot resume while the plugin is uninstalled; reinstalling it restores them.
+A tarball from `npm pack` works in place of the package name. To uninstall, remove the plugin on the Plugins page, or quit Desktop and run `dsh plugin --profile desktop remove dsh-nai5-prompting`. Sessions created with this preset cannot resume while the plugin is uninstalled; reinstalling it restores them.
 
 ## Use
 
@@ -96,15 +98,17 @@ npm test
 
 ## Verified
 
-On 2026-10-20 with dsh 0.2.1-rc.2 (Desktop's bundled CLI), in a scratch `DSH_HOME` `web` profile, installed from the `npm pack` tarball. A local stand-in model endpoint recorded every request, so no real key was used:
+**0.1.3, 2026-10-30.** dsh 0.2.1-rc.3 (Desktop's bundled CLI) and 0.2.2-alpha.2 (the official npm package, installed in a scratch directory), each with a scratch `DSH_HOME` `web` profile and the `npm pack` tarball. A local stand-in model endpoint recorded every request, so no real key was used. A test plugin registered a global tool four seconds after startup, the way MCP servers register theirs late:
 
 - The preset appears in the menu, and the `/` menu lists only the 11 nai5 skills.
-- An NAI5 session's request carries only this plugin's system prompt, the tools `ask_user_question`, `edit`, `read`, `read_image`, `skill`, `web_fetch`, `web_search`, `write`, the workspace `NAI.md` (not `AGENTS.md`), and only nai5 skills. A global tool (`todo_write`) and a global skill added for the test were hidden.
-- A Standard session in the same workspace kept its 31 tools and 45 skills, saw the test's global tool and skill, read `AGENTS.md` and not `NAI.md`, and listed no nai5 skill.
-- Hiding held for a blank session switched to the preset and for a session continued after a server restart.
-- The session logs contain no custom event types.
+- An NAI5 session's request carries only this plugin's system prompt, only the tools the preset mounts (8 on rc.3; 7 on 0.2.2, which omits `web_search` without search credentials), the workspace `NAI.md` (not `AGENTS.md`), and only nai5 skills. The test's global tool, global skill, and late-registered tool were hidden, including in the first step of a session continued after a server restart.
+- 0.1.2 reproduced the late-registration problem on rc.3: the tool appeared in the first step and was removed only in the second. 0.1.3 denies new global tools on every tool-registry change.
 
-Hiding Desktop's Office skills uses the same global-skill mechanism but was not exercised on Desktop. Skill quality with a real model was not tested.
+**Desktop 0.2.1-rc.3, daily use (0.1.2).** The skill catalog listed only the 11 nai5 skills, with Desktop's Office skills hidden. MCP and Office add-on tools appeared in the first step after each start and were removed in the second: the problem above, fixed in 0.1.3.
+
+**0.1.0, 2026-10-20, dsh 0.2.1-rc.2.** Besides the checks above: a Standard session in the same workspace still saw global tools and skills, read `AGENTS.md` and not `NAI.md`, and listed no nai5 skill; switching a blank session to the preset applied the same isolation; the session logs contained no custom event types.
+
+Skill quality has been exercised only in daily Desktop use, not tested systematically.
 
 ## License
 

@@ -10,7 +10,7 @@
 
 - **系统提示词**整份换成写提示词的说明，写代码那套说明不会出现。说明里交代了这个环境的实际情况（只交文本、没有生图和工作台写入、预设开关按「关闭写足」），方法本身全部交给技能。
 - **技能**只有 nai5-prompting v1.2.5 的 11 个拆分技能，原样拷贝，没有改动（见 [VENDOR.md](VENDOR.md)）。
-- **工具**只有这些：载入技能、读写工作区文件、看图、向你提问、联网搜索和抓取网页（核对 tag 和角色名）。没有终端、子代理、计划模式、任务清单和 MCP。
+- **工具**只有这些：载入技能、读写工作区文件、看图、向你提问、联网搜索和抓取网页（核对 tag 和角色名）。没有终端、子代理、计划模式、任务清单和 MCP。dsh 0.2.2 起，当前模型线路拿不到搜索服务的凭据时，那一步不提供联网搜索。
 - **长对话**：上下文快满时自动压缩，也可以手动输入 `/compact`。
 
 ## 互不干涉
@@ -28,22 +28,22 @@
 
 ## 安装
 
-需要 dsh **0.2.1-rc.2 及以上、0.3.0 以下**（`package.json` 的 `engines.dsh`）。插件是纯 JavaScript，安装时不需要构建，也不需要打开 `allowBuilds`。
+需要 dsh **0.2.1-rc.2 及以上、0.3.0 以下**（`package.json` 的 `engines.dsh`），在 0.2.1-rc.3 和 0.2.2-alpha.2 上实测过。插件是纯 JavaScript，安装时不需要构建，也不需要打开 `allowBuilds`。
 
-**桌面端**：点侧栏的「插件」（不是「设置」），再点页面右上角的「＋ 添加插件」（它旁边的下拉箭头里也有同一个入口「安装第三方插件」），在弹出的输入框里填 `github:Miint-Sunny/dsh-nai5-prompting#<提交号>`，或者本机仓库的目录路径，然后点「安装」。钉住提交号，以后仓库再推送也不会悄悄改掉你装的内容。
+**桌面端**：点侧栏的「插件」（不是「设置」），再点页面右上角的「＋ 添加插件」（它旁边的下拉箭头里也有同一个入口「安装第三方插件」），在输入框里填 npm 包名 `dsh-nai5-prompting`，然后点「安装」。dsh 用 pnpm 安装，默认不装发布不满 24 小时的版本，所以刚发布的新版要过一天才装得上。
+
+输入框里也可以填 `github:Miint-Sunny/dsh-nai5-prompting#<提交号>`（钉住提交号，以后仓库再推送也不会悄悄改掉你装的内容），或者本机仓库的目录路径。
 
 也可以用命令行：先 **⌘Q 完全退出桌面端**，再用桌面端自带的 dsh 安装：
 
 ```bash
-"/Applications/DeepSeek Harness.app/Contents/Resources/runtime/cli/bin/dsh" plugin --profile desktop add github:Miint-Sunny/dsh-nai5-prompting#<提交号>
+"/Applications/DeepSeek Harness.app/Contents/Resources/runtime/cli/bin/dsh" plugin --profile desktop add dsh-nai5-prompting@0.1.3 --save-exact
 ```
-
-还可以装打好的包：在仓库里运行 `npm pack`，把上面的 `github:…` 换成生成的 `.tgz` 文件路径。
 
 **其他 profile**（例如 `dsh web`）：
 
 ```bash
-dsh plugin --profile web add github:Miint-Sunny/dsh-nai5-prompting#<提交号>
+dsh plugin --profile web add dsh-nai5-prompting@0.1.3 --save-exact
 ```
 
 卸载：在插件页关掉或移除这个插件；或者退出桌面端后运行 `dsh plugin --profile desktop remove dsh-nai5-prompting`。卸载后，用这个预设建的旧会话没法继续，装回来就能接着用。
@@ -102,15 +102,17 @@ npm test
 
 ## 已验证
 
-2026-10-20，dsh 0.2.1-rc.2（桌面端自带的 CLI），临时 `DSH_HOME` 里的 `web` profile，用 `npm pack` 出的包安装。模型换成本机一个记录请求的假接口，没有用真实 key，直接核对 dsh 发给模型的内容：
+**0.1.3，2026-10-30。** dsh 0.2.1-rc.3（桌面端自带的 CLI）和 0.2.2-alpha.2（npm 上的官方包，装在临时目录），各用一个临时 `DSH_HOME` 的 `web` profile，装 `npm pack` 出的包。模型换成本机一个记录请求的假接口，没有用真实 key，直接核对 dsh 发给模型的内容。另加了一个启动 4 秒后才注册的全局测试工具，模拟 MCP 工具晚注册：
 
 - 预设出现在菜单里；输入 `/` 时技能区只有 11 个 nai5 技能。
-- 「NAI5 提示词」会话：系统提示词只有本插件的说明；工具只有 `ask_user_question`、`edit`、`read`、`read_image`、`skill`、`web_fetch`、`web_search`、`write`；读入 `NAI.md`，不读 `AGENTS.md`；技能目录只有 nai5 技能。测试时特意加的一个全局工具（`todo_write`）和一个全局技能都被隐藏。
-- 同一工作区的 Standard 会话：31 个工具和 45 个技能照旧，能看到那个全局工具和全局技能，读 `AGENTS.md` 不读 `NAI.md`，没有任何 nai5 技能。
-- 先开空会话再切到这个预设、以及重启服务后继续旧会话，隐藏都照样生效。
-- 会话文件里没有自定义事件类型。
+- 「NAI5 提示词」会话的请求：系统提示词只有本插件的说明；工具只有本预设挂载的那几个（rc.3 上 8 个；0.2.2 上 7 个，因为没配搜索凭据时 dsh 不提供 `web_search`）；读入 `NAI.md`，不读 `AGENTS.md`；技能目录只有 nai5 技能。测试用的全局工具、全局技能和晚注册的工具都被隐藏，服务重启后接着用旧会话的第一步也一样。
+- 0.1.2 在 rc.3 上复现过晚注册的问题：那个工具会出现在第一步，第二步才被移除。0.1.3 改成工具注册表一有变化就屏蔽。
 
-桌面端 Office 技能的隐藏走的是同一套机制（全局技能），但没在桌面端实测。没有用真实模型测过技能调用的效果。
+**桌面端 0.2.1-rc.3 日常使用（0.1.2）。** 技能目录只有 11 个 nai5 技能，桌面端自带的 Office 技能被隐藏。MCP 和 Office 附加工具在每次启动后的第一步出现、第二步才被移除，就是上面那个问题，0.1.3 已修。
+
+**0.1.0，2026-10-20，dsh 0.2.1-rc.2。** 除上面的检查外还核对过：同一工作区的 Standard 会话照旧能看到全局工具和全局技能、读 `AGENTS.md` 不读 `NAI.md`、没有 nai5 技能；先开空会话再切到这个预设也生效；会话文件里没有自定义事件类型。
+
+技能调用的效果只在桌面端日常用过，没有系统测过。
 
 ## 许可
 

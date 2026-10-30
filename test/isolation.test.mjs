@@ -10,6 +10,7 @@ function fakeContext({ globalTools = [], globalSkills = [], restrictFails = 0 } 
     globalSkills: [...globalSkills],
     restrictions: [],
     listeners: new Map(),
+    disposers: [],
     providers: [],
     skillListCalls: [],
     warnings: [],
@@ -42,9 +43,19 @@ function fakeContext({ globalTools = [], globalSkills = [], restrictFails = 0 } 
       state.listeners.set(event, listener)
       return () => {}
     },
+    effect: (create) => {
+      state.disposers.push(create())
+    },
     logger: { warn: message => state.warnings.push(message) },
   }
   return { ctx, state }
+}
+
+/** Emit `tools/change` as the registry does, then let queued microtasks run. */
+async function toolsChange(state, times = 1) {
+  const listener = state.listeners.get('tools/change')
+  for (let i = 0; i < times; i++) listener()
+  await Promise.resolve()
 }
 
 /** Run the preset's pre-step listener as the agent loop's waterfall would. */
@@ -73,6 +84,27 @@ test('tools registered later are denied before the next model step, once each', 
   assert.deepEqual(first.result, { kind: 'continue' })
   await preStep(state)
   assert.deepEqual(state.restrictions, [{ deny: ['working_directory'] }, { deny: ['mcp__playwright__browser_click'] }])
+})
+
+test('tools registered after mount are denied on the registry change, before any model step', async () => {
+  const { ctx, state } = fakeContext({ globalTools: ['working_directory'] })
+  hideGlobalTools(ctx, new Set())
+  state.globalTools.push('mcp__github__search', 'mcp__github__get_issue')
+  // An MCP server registers its tools in a burst; the notices collapse into one restriction.
+  await toolsChange(state, 3)
+  assert.deepEqual(state.restrictions, [{ deny: ['working_directory'] }, { deny: ['mcp__github__search', 'mcp__github__get_issue'] }])
+  // The notice our own restriction causes finds nothing new.
+  await toolsChange(state)
+  assert.equal(state.restrictions.length, 2)
+})
+
+test('registry changes after disposal restrict nothing', async () => {
+  const { ctx, state } = fakeContext({ globalTools: [] })
+  hideGlobalTools(ctx, new Set())
+  for (const dispose of state.disposers) dispose()
+  state.globalTools.push('mcp__fetch__fetch')
+  await toolsChange(state)
+  assert.deepEqual(state.restrictions, [])
 })
 
 test('a failed restriction is logged and retried on the next step', async () => {
