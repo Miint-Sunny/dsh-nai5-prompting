@@ -9,7 +9,7 @@ Adds an "NAI5 提示词" (NAI5 prompting) agent preset to [DeepSeek Harness](htt
 Pick "NAI5 提示词" from the preset menu when you start a session (the button that shows "Standard mode" by default).
 
 - **System prompt**: replaced entirely by prompt-writing instructions; the coding instructions never appear. The instructions state what this environment can do: text only, no image generation or workbench writes, and NovelAI presets assumed off. The method itself comes from the skills.
-- **Skills**: only the 11 split skills of nai5-prompting v1.2.6, copied byte for byte (see [VENDOR.md](VENDOR.md)).
+- **Skills**: only the 11 split skills of nai5-prompting v1.2.7, copied byte for byte (see [VENDOR.md](VENDOR.md)).
 - **Tools**: loading skills, reading and writing workspace files, viewing images, asking you questions, and web search and fetch for checking tags and character names. There is no terminal, subagent, plan mode, todo list, or MCP. From dsh 0.2.2, a step omits web search when the current model route has no credentials for the search service.
 - **Long sessions**: automatic compaction near the context limit, plus a manual `/compact`.
 
@@ -30,19 +30,19 @@ Exception: dsh always reads the global instruction files `~/.dsh/AGENTS.md` and 
 
 Requires dsh **0.2.1-rc.2 or later, below 0.3.0** (`engines.dsh` in `package.json`); tested on 0.2.1-rc.3, 0.2.1-rc.5, and 0.2.2-alpha.2. The plugin is plain JavaScript: installation runs no build and needs no `allowBuilds` entry.
 
-**Desktop**: select **Plugins** in the sidebar (not Settings), then **+ Add plugin** at the top right; the arrow beside it offers the same entry as **Install a third-party plugin**. Enter `github:Miint-Sunny/dsh-nai5-prompting#v0.1.4`, then select **Install**. To guard against a moved tag, replace `v0.1.4` with the commit listed on the [release page](https://github.com/Miint-Sunny/dsh-nai5-prompting/releases). The same field also takes the path of a local checkout. Alternatively, fully quit Desktop (⌘Q) and run its bundled CLI:
+**Desktop**: select **Plugins** in the sidebar (not Settings), then **+ Add plugin** at the top right; the arrow beside it offers the same entry as **Install a third-party plugin**. Enter `github:Miint-Sunny/dsh-nai5-prompting#v0.1.5`, then select **Install**. To guard against a moved tag, replace `v0.1.5` with the commit listed on the [release page](https://github.com/Miint-Sunny/dsh-nai5-prompting/releases). The same field also takes the path of a local checkout. Alternatively, fully quit Desktop (⌘Q) and run its bundled CLI:
 
 ```bash
-"/Applications/DeepSeek Harness.app/Contents/Resources/runtime/cli/bin/dsh" plugin --profile desktop add github:Miint-Sunny/dsh-nai5-prompting#v0.1.4
+"/Applications/DeepSeek Harness.app/Contents/Resources/runtime/cli/bin/dsh" plugin --profile desktop add github:Miint-Sunny/dsh-nai5-prompting#v0.1.5
 ```
 
 **Other profiles** (for example `dsh web`):
 
 ```bash
-dsh plugin --profile web add github:Miint-Sunny/dsh-nai5-prompting#v0.1.4
+dsh plugin --profile web add github:Miint-Sunny/dsh-nai5-prompting#v0.1.5
 ```
 
-The release also carries `dsh-nai5-prompting-0.1.4.tgz`; its path works in place of the `github:` spec without fetching the repository. To uninstall, remove the plugin on the Plugins page, or quit Desktop and run `dsh plugin --profile desktop remove dsh-nai5-prompting`. Sessions created with this preset cannot resume while the plugin is uninstalled; reinstalling it restores them.
+The release also carries `dsh-nai5-prompting-0.1.5.tgz`; its path works in place of the `github:` spec without fetching the repository. To uninstall, remove the plugin on the Plugins page, or quit Desktop and run `dsh plugin --profile desktop remove dsh-nai5-prompting`. Sessions created with this preset cannot resume while the plugin is uninstalled; reinstalling it restores them.
 
 ## Use
 
@@ -95,6 +95,8 @@ npm test
 ```
 
 ## Verified
+
+**0.1.5, 2026-10-30.** Only the vendored skills changed: nai5-prompting v1.2.7 corrects v1.2.6 so that `source#`, `target#`, and `mutual#` prefixes are written only when the characters interact, not when each does something of their own; it again edits only reference files of nai5-writing and nai5-reverse-prompt. No `SKILL.md` and no plugin code changed. This version ran only `npm test`, not the runtime checks below.
 
 **0.1.4, 2026-10-30.** Only the vendored skills changed: nai5-prompting v1.2.6 edits reference files of nai5-writing and nai5-reverse-prompt (multi-character images always carry `source#`, `target#`, or `mutual#` prefixes); no `SKILL.md` and no plugin code changed. This version ran only `npm test`, not the runtime checks below.
 

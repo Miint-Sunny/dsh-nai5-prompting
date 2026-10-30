@@ -1,7 +1,7 @@
 # 内置技能：nai5-prompting
 
 - 来源：<https://github.com/Miint-Sunny/nai5-prompting>
-- 版本：见 `vendor.json` 的 `tag` 与 `commit`（当前 v1.2.6，`7b130f8a9f419200d36ff1dabb917f39c9d13a41`）
+- 版本：见 `vendor.json` 的 `tag` 与 `commit`（当前 v1.2.7，`1285cb02226a4b3c4f7637832fe32e81f3e5b57a`）
 - 形式：拆分版，11 个技能
 - 许可：GPL-3.0-only，与本仓库相同；每个技能目录里保留了原有的 `LICENSE` 与 `NOTICE`
 
