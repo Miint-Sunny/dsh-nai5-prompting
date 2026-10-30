@@ -30,20 +30,20 @@
 
 需要 dsh **0.2.1-rc.2 及以上、0.3.0 以下**（`package.json` 的 `engines.dsh`），在 0.2.1-rc.3 和 0.2.2-alpha.2 上实测过。插件是纯 JavaScript，安装时不需要构建，也不需要打开 `allowBuilds`。
 
-**桌面端**：点侧栏的「插件」（不是「设置」），再点页面右上角的「＋ 添加插件」（它旁边的下拉箭头里也有同一个入口「安装第三方插件」），在输入框里填 npm 包名 `dsh-nai5-prompting`，然后点「安装」。dsh 用 pnpm 安装，默认不装发布不满 24 小时的版本，所以刚发布的新版要过一天才装得上。
-
-输入框里也可以填 `github:Miint-Sunny/dsh-nai5-prompting#<提交号>`（钉住提交号，以后仓库再推送也不会悄悄改掉你装的内容），或者本机仓库的目录路径。
+**桌面端**：点侧栏的「插件」（不是「设置」），再点页面右上角的「＋ 添加插件」（它旁边的下拉箭头里也有同一个入口「安装第三方插件」），在输入框里填 `github:Miint-Sunny/dsh-nai5-prompting#v0.1.3`，然后点「安装」。想防止标签被改动，就把 `v0.1.3` 换成 [Release 页](https://github.com/Miint-Sunny/dsh-nai5-prompting/releases)上写的那个提交号。输入框里也可以填本机仓库的目录路径。
 
 也可以用命令行：先 **⌘Q 完全退出桌面端**，再用桌面端自带的 dsh 安装：
 
 ```bash
-"/Applications/DeepSeek Harness.app/Contents/Resources/runtime/cli/bin/dsh" plugin --profile desktop add dsh-nai5-prompting@0.1.3 --save-exact
+"/Applications/DeepSeek Harness.app/Contents/Resources/runtime/cli/bin/dsh" plugin --profile desktop add github:Miint-Sunny/dsh-nai5-prompting#v0.1.3
 ```
+
+Release 页上附了打好的 `dsh-nai5-prompting-0.1.3.tgz`，下载后把上面的 `github:…` 换成这个文件的路径也能装，不用联网拉仓库。
 
 **其他 profile**（例如 `dsh web`）：
 
 ```bash
-dsh plugin --profile web add dsh-nai5-prompting@0.1.3 --save-exact
+dsh plugin --profile web add github:Miint-Sunny/dsh-nai5-prompting#v0.1.3
 ```
 
 卸载：在插件页关掉或移除这个插件；或者退出桌面端后运行 `dsh plugin --profile desktop remove dsh-nai5-prompting`。卸载后，用这个预设建的旧会话没法继续，装回来就能接着用。

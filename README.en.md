@@ -30,21 +30,19 @@ Exception: dsh always reads the global instruction files `~/.dsh/AGENTS.md` and 
 
 Requires dsh **0.2.1-rc.2 or later, below 0.3.0** (`engines.dsh` in `package.json`); tested on 0.2.1-rc.3 and 0.2.2-alpha.2. The plugin is plain JavaScript: installation runs no build and needs no `allowBuilds` entry.
 
-**Desktop**: select **Plugins** in the sidebar (not Settings), then **+ Add plugin** at the top right; the arrow beside it offers the same entry as **Install a third-party plugin**. Enter the npm package name `dsh-nai5-prompting`, then select **Install**. dsh installs through pnpm, which by default skips versions published less than 24 hours ago, so a new release becomes installable a day after it is published.
-
-The same field also takes `github:Miint-Sunny/dsh-nai5-prompting#<commit>` (pinning a commit keeps later pushes from changing what you installed) or the path of a local checkout. Alternatively, fully quit Desktop (⌘Q) and run its bundled CLI:
+**Desktop**: select **Plugins** in the sidebar (not Settings), then **+ Add plugin** at the top right; the arrow beside it offers the same entry as **Install a third-party plugin**. Enter `github:Miint-Sunny/dsh-nai5-prompting#v0.1.3`, then select **Install**. To guard against a moved tag, replace `v0.1.3` with the commit listed on the [release page](https://github.com/Miint-Sunny/dsh-nai5-prompting/releases). The same field also takes the path of a local checkout. Alternatively, fully quit Desktop (⌘Q) and run its bundled CLI:
 
 ```bash
-"/Applications/DeepSeek Harness.app/Contents/Resources/runtime/cli/bin/dsh" plugin --profile desktop add dsh-nai5-prompting@0.1.3 --save-exact
+"/Applications/DeepSeek Harness.app/Contents/Resources/runtime/cli/bin/dsh" plugin --profile desktop add github:Miint-Sunny/dsh-nai5-prompting#v0.1.3
 ```
 
 **Other profiles** (for example `dsh web`):
 
 ```bash
-dsh plugin --profile web add dsh-nai5-prompting@0.1.3 --save-exact
+dsh plugin --profile web add github:Miint-Sunny/dsh-nai5-prompting#v0.1.3
 ```
 
-A tarball from `npm pack` works in place of the package name. To uninstall, remove the plugin on the Plugins page, or quit Desktop and run `dsh plugin --profile desktop remove dsh-nai5-prompting`. Sessions created with this preset cannot resume while the plugin is uninstalled; reinstalling it restores them.
+The release also carries `dsh-nai5-prompting-0.1.3.tgz`; its path works in place of the `github:` spec without fetching the repository. To uninstall, remove the plugin on the Plugins page, or quit Desktop and run `dsh plugin --profile desktop remove dsh-nai5-prompting`. Sessions created with this preset cannot resume while the plugin is uninstalled; reinstalling it restores them.
 
 ## Use
 
