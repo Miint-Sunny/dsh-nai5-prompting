@@ -28,7 +28,7 @@ Exception: dsh always reads the global instruction files `~/.dsh/AGENTS.md` and 
 
 ## Install
 
-Requires dsh **0.2.1-rc.2 or later, below 0.3.0** (`engines.dsh` in `package.json`); tested on 0.2.1-rc.3 and 0.2.2-alpha.2. The plugin is plain JavaScript: installation runs no build and needs no `allowBuilds` entry.
+Requires dsh **0.2.1-rc.2 or later, below 0.3.0** (`engines.dsh` in `package.json`); tested on 0.2.1-rc.3, 0.2.1-rc.5, and 0.2.2-alpha.2. The plugin is plain JavaScript: installation runs no build and needs no `allowBuilds` entry.
 
 **Desktop**: select **Plugins** in the sidebar (not Settings), then **+ Add plugin** at the top right; the arrow beside it offers the same entry as **Install a third-party plugin**. Enter `github:Miint-Sunny/dsh-nai5-prompting#v0.1.3`, then select **Install**. To guard against a moved tag, replace `v0.1.3` with the commit listed on the [release page](https://github.com/Miint-Sunny/dsh-nai5-prompting/releases). The same field also takes the path of a local checkout. Alternatively, fully quit Desktop (⌘Q) and run its bundled CLI:
 
@@ -96,10 +96,10 @@ npm test
 
 ## Verified
 
-**0.1.3, 2026-10-30.** dsh 0.2.1-rc.3 (Desktop's bundled CLI) and 0.2.2-alpha.2 (the official npm package, installed in a scratch directory), each with a scratch `DSH_HOME` `web` profile and the `npm pack` tarball. A local stand-in model endpoint recorded every request, so no real key was used. A test plugin registered a global tool four seconds after startup, the way MCP servers register theirs late:
+**0.1.3, 2026-10-30.** dsh 0.2.1-rc.3, 0.2.1-rc.5 (Desktop's bundled CLI before and after its update), and 0.2.2-alpha.2 (the official npm package, installed in a scratch directory), each with a scratch `DSH_HOME` `web` profile and the `npm pack` tarball. A local stand-in model endpoint recorded every request, so no real key was used. A test plugin registered a global tool four seconds after startup, the way MCP servers register theirs late:
 
 - The preset appears in the menu, and the `/` menu lists only the 11 nai5 skills.
-- An NAI5 session's request carries only this plugin's system prompt, only the tools the preset mounts (8 on rc.3; 7 on 0.2.2, which omits `web_search` without search credentials), the workspace `NAI.md` (not `AGENTS.md`), and only nai5 skills. The test's global tool, global skill, and late-registered tool were hidden, including in the first step of a session continued after a server restart.
+- An NAI5 session's request carries only this plugin's system prompt, only the tools the preset mounts (8 on 0.2.1; 7 on 0.2.2, which omits `web_search` without search credentials), the workspace `NAI.md` (not `AGENTS.md`), and only nai5 skills. The test's global tool, global skill, and late-registered tool were hidden, including in the first step of a session continued after a server restart.
 - 0.1.2 reproduced the late-registration problem on rc.3: the tool appeared in the first step and was removed only in the second. 0.1.3 denies new global tools on every tool-registry change.
 
 **Desktop 0.2.1-rc.3, daily use (0.1.2).** The skill catalog listed only the 11 nai5 skills, with Desktop's Office skills hidden. MCP and Office add-on tools appeared in the first step after each start and were removed in the second: the problem above, fixed in 0.1.3.
